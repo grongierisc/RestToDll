@@ -1,0 +1,8 @@
+C:\Users\training\git\RestToDll\Allergie\Allergie\bin\Debug\net45\Allergie.dll
+C:\Users\training\git\RestToDll\Allergie\Allergie\bin\Debug\net45\Allergie.pdb
+C:\Users\training\git\RestToDll\Allergie\Allergie\obj\Debug\net45\Allergie.csprojAssemblyReference.cache
+C:\Users\training\git\RestToDll\Allergie\Allergie\obj\Debug\net45\Allergie.csproj.CoreCompileInputs.cache
+C:\Users\training\git\RestToDll\Allergie\Allergie\obj\Debug\net45\Allergie.AssemblyInfoInputs.cache
+C:\Users\training\git\RestToDll\Allergie\Allergie\obj\Debug\net45\Allergie.AssemblyInfo.cs
+C:\Users\training\git\RestToDll\Allergie\Allergie\obj\Debug\net45\Allergie.dll
+C:\Users\training\git\RestToDll\Allergie\Allergie\obj\Debug\net45\Allergie.pdb
