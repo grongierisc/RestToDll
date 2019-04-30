@@ -7,6 +7,8 @@ Property OG As %Net.Remote.ObjectGateway;
 
 Property GW As %Net.Remote.Gateway;
 
+Property proxyGateway As %Net.Remote.Object;
+
 Parameter SETTINGS = "DllPath";
 
 Method OnInit() As %Status
@@ -14,6 +16,7 @@ Method OnInit() As %Status
     $$$ThrowOnError(..CreateGateWay())
     $$$ThrowOnError(..StartGateWay())
     $$$ThrowOnError(..ConnectGetWay())
+    $$$ThrowOnError(..SetProxy())
     Quit $$$OK
 }
 
@@ -71,6 +74,17 @@ Method ConnectGetWay() As %Status
         Quit $$$OK
 }
 
+Method SetProxy() As %Status
+{
+    if '$ISOBJECT(..proxyGateway)
+    {
+        // Use GW connection to create a proxy for the Fruit class
+        set ..proxyGateway = ##class(%Net.Remote.Object).%New(..GW,"Allergie.Allergie")
+    }
+
+    Quit $$$OK
+}
+
 Method OnGetReaction(pRequest As RestToDll.Msg.ReactionRequest, Output pResponse As RestToDll.Msg.ResultResponse) As %Status
 {
         set tStatus = $$$OK
@@ -87,6 +101,42 @@ Method OnGetReaction(pRequest As RestToDll.Msg.ReactionRequest, Output pResponse
         }
         
         Quit tStatus
+}
+
+Method OnAddReaction(pRequest As RestToDll.Msg.AddReactionRequest, Output pResponse As RestToDll.Msg.ResultResponse) As %Status
+{
+            set tStatus = $$$OK
+            
+            try{
+        
+                $$$ThrowOnError(..AddAllergie(pRequest.Name,"Reaction",.pResponse))
+                            
+            }
+            catch exp
+            {
+                Set tStatus = exp.AsStatus()
+                
+            }
+            
+            Quit tStatus
+}
+
+Method OnAddAliment(pRequest As RestToDll.Msg.AddAlimentRequest, Output pResponse As RestToDll.Msg.ResultResponse) As %Status
+{
+            set tStatus = $$$OK
+            
+            try{
+        
+                $$$ThrowOnError(..AddAllergie(pRequest.Name,"Aliment",.pResponse))
+                            
+            }
+            catch exp
+            {
+                Set tStatus = exp.AsStatus()
+                
+            }
+            
+            Quit tStatus
 }
 
 Method OnGetAliment(pRequest As RestToDll.Msg.AlimentRequest, Output pResponse As RestToDll.Msg.ResultResponse) As %Status
@@ -117,17 +167,14 @@ Method GetAllergie(pName As %String, tType As %String, Output pResponse As RestT
                 Set pResponse.Results = ##class(%ListOfDataTypes).%New()
             
                 try{
-            
-                    // Use GW connection to create a proxy for the Fruit class
-                    set proxyAllergie = ##class(%Net.Remote.Object).%New(..GW,"Allergie.Allergie")
-        
+
                     if tType = "Aliment"
                     {
-                        set tReturn = proxyAllergie.getReactions(pName)
+                        set tReturn = ..proxyGateway.getReactions(pName)
                     }   
                     else
                     {
-                        set tReturn = proxyAllergie.getAliments(pName)
+                        set tReturn = ..proxyGateway.getAliments(pName)
                     } 
         
                     For x=0:1:tReturn.Count-1 {
@@ -142,6 +189,33 @@ Method GetAllergie(pName As %String, tType As %String, Output pResponse As RestT
                 }
                 
                 Quit tStatus
+}
+
+Method AddAllergie(pName As %String, tType As %String, Output pResponse As RestToDll.Msg.ResultResponse) As %Status
+{
+        set tStatus = $$$OK
+        
+        Set pResponse = ##class(Ens.Response).%New()
+    
+        try{
+    
+            if tType '= "Aliment"
+            {
+                do ..proxyGateway.addReaction(pName)
+            }   
+            else
+            {
+                do ..proxyGateway.addAliment(pName)
+            } 
+                        
+        }
+        catch exp
+        {
+            Set tStatus = exp.AsStatus()
+            
+        }
+        
+        Quit tStatus
 }
 
 Method OnTearDown() As %Status
@@ -162,6 +236,14 @@ XData MessageMap
        
         <MapItem MessageType="RestToDll.Msg.AlimentRequest"> 
             <Method>OnGetAliment</Method>
+        </MapItem>
+
+        <MapItem MessageType="RestToDll.Msg.AddReactionRequest"> 
+            <Method>OnAddReaction</Method>
+        </MapItem>
+       
+        <MapItem MessageType="RestToDll.Msg.AddAlimentRequest"> 
+            <Method>OnAddAliment</Method>
         </MapItem>
     </MapItems>
 }

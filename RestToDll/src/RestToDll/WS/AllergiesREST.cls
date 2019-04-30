@@ -44,8 +44,8 @@ Parameter HandleCorsRequest As %Integer = 1;
 XData UrlMap [ XMLNamespace = "http://www.intersystems.com/urlmap" ]
 {
 <Routes>
-<Route Url="/allergies/:name" Method="GET" Cors="true" Call="GetFromAllergie"/>
-<Route Url="/allergies" Method="POST" Cors="true" Call="AddAllergies"/>
+<Route Url="/reactions/:name" Method="GET" Cors="true" Call="GetFromAllergie"/>
+<Route Url="/reactions" Method="POST" Cors="true" Call="AddAllergies"/>
 <Route Url="/aliments/:name" Method="GET" Cors="true" Call="GetFromAliment"/>
 <Route Url="/aliments" Method="POST" Cors="true" Call="AddAliments"/>
 </Routes>
@@ -72,7 +72,7 @@ ClassMethod GetFromAllergie(pName As %String) As %Status
 	return status
 }
 
-ClassMethod GetFromAliment() As %Status
+ClassMethod GetFromAliment(pName As %String) As %Status
 {
 	set status = $$$OK
 	try {
