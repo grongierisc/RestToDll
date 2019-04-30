@@ -44,33 +44,23 @@ Parameter HandleCorsRequest As %Integer = 1;
 XData UrlMap [ XMLNamespace = "http://www.intersystems.com/urlmap" ]
 {
 <Routes>
-<Route Url="/allergies" Method="GET" Cors="true" Call="GetFromAllergie"/>
-<Route Url="/aliments" Method="GET" Cors="true" Call="GetFromAliment"/>
+<Route Url="/allergies/:name" Method="GET" Cors="true" Call="GetFromAllergie"/>
+<Route Url="/allergies" Method="POST" Cors="true" Call="AddAllergies"/>
+<Route Url="/aliments/:name" Method="GET" Cors="true" Call="GetFromAliment"/>
+<Route Url="/aliments" Method="POST" Cors="true" Call="AddAliments"/>
 </Routes>
 }
 
-ClassMethod GetFromAllergie() As %Status
+ClassMethod GetFromAllergie(pName As %String) As %Status
 {
 	set status = $$$OK
 	try {
 
 		$$$ThrowOnError(##class(Ens.Director).CreateBusinessService(..#BsName,.tService))
 		
-		set tRequest = ##class(RestToDll.Msg.AllergieRequest).%New()
-		
-		set body = ""
-		set bodySream = %request.Content
-		if $ISOBJECT($get(bodySream))
-		{
-			$$$ThrowOnError(%request.Content.Rewind())
-			While (%request.Content.AtEnd = 0)
-			{
-				Set len = 1000
-				set body = body _$ZCONVERT(%request.Content.Read(.len),"I","UTF8")
-			}
-		}
-		
-		$$$ThrowOnError(##CLASS(%ZEN.Auxiliary.jsonProvider).%ConvertJSONToObject(body,"RestToDll.Msg.AllergieRequest",.tRequest,1))
+		set tRequest = ##class(RestToDll.Msg.RestGetRequest).%New()
+		set tRequest.Type = "allergie"
+		set tRequest.Name = pName
 		
 		$$$ThrowOnError(tService.ProcessInput(tRequest,.output))	
 	
@@ -89,21 +79,9 @@ ClassMethod GetFromAliment() As %Status
 
 		$$$ThrowOnError(##class(Ens.Director).CreateBusinessService(..#BsName,.tService))
 		
-		set tRequest = ##class(RestToDll.Msg.AlimentRequest).%New()
-		
-		set body = ""
-		set bodySream = %request.Content
-		if $ISOBJECT($get(bodySream))
-		{
-			$$$ThrowOnError(%request.Content.Rewind())
-			While (%request.Content.AtEnd = 0)
-			{
-				Set len = 1000
-				set body = body _$ZCONVERT(%request.Content.Read(.len),"I","UTF8")
-			}
-		}
-		
-		$$$ThrowOnError(##CLASS(%ZEN.Auxiliary.jsonProvider).%ConvertJSONToObject(body,"RestToDll.Msg.AlimentRequest",.tRequest,1))
+		set tRequest = ##class(RestToDll.Msg.RestGetRequest).%New()
+		set tRequest.Type = "aliment"
+		set tRequest.Name = pName
 		
 		$$$ThrowOnError(tService.ProcessInput(tRequest,.output))	
 	
