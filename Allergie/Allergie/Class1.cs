@@ -31,7 +31,7 @@ namespace Allergie
         /// <returns>Liste des réactions</returns>
         public List<string> getReactions(String aliment)
         {
-          return getContainsList(aliment,aliments,"aliment");
+          return getContainsList(aliment,aliments,"reaction");
         }
 
         /// <summary>
@@ -41,7 +41,7 @@ namespace Allergie
         /// <returns>Liste des aliments</returns>
         public List<string> getAliments(String reaction)
         {
-            return getContainsList(reaction, reactions, "reaction");
+            return getContainsList(reaction, reactions, "aliment");
         }
 
         /// <summary>
@@ -61,11 +61,11 @@ namespace Allergie
                 {
                     if (type == "aliment")
                     {
-                        tListReturn = reactions;
+                        tListReturn = aliments;
                     }
                     else
                     {
-                        tListReturn = aliments;
+                        tListReturn = reactions;
                     }
                 }
             }

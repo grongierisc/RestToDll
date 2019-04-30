@@ -1,9 +1,0 @@
-C:\Users\training\git\RestToDll\Allergie\Allergie\obj\Debug\netstandard2.0\Allergie.csprojAssemblyReference.cache
-C:\Users\training\git\RestToDll\Allergie\Allergie\obj\Debug\netstandard2.0\Allergie.csproj.CoreCompileInputs.cache
-C:\Users\training\git\RestToDll\Allergie\Allergie\obj\Debug\netstandard2.0\Allergie.AssemblyInfoInputs.cache
-C:\Users\training\git\RestToDll\Allergie\Allergie\obj\Debug\netstandard2.0\Allergie.AssemblyInfo.cs
-C:\Users\training\git\RestToDll\Allergie\Allergie\bin\Debug\netstandard2.0\Allergie.deps.json
-C:\Users\training\git\RestToDll\Allergie\Allergie\bin\Debug\netstandard2.0\Allergie.dll
-C:\Users\training\git\RestToDll\Allergie\Allergie\bin\Debug\netstandard2.0\Allergie.pdb
-C:\Users\training\git\RestToDll\Allergie\Allergie\obj\Debug\netstandard2.0\Allergie.dll
-C:\Users\training\git\RestToDll\Allergie\Allergie\obj\Debug\netstandard2.0\Allergie.pdb
