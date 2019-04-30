@@ -1,2 +1,5 @@
-.vs
-.vscode/settings.json
+Allergie/.vs/
+.vscode/
+Allergie/Allergie/obj/*
+Allergie/Allergie/bin/*
+
