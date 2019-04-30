@@ -1,4 +1,4 @@
-Class RestToDll.Msg.AllergieRequest Extends Ens.Request
+Class RestToDll.Msg.ReactionRequest Extends Ens.Request
 {
 
 Property Name As %String;
