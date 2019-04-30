@@ -1,0 +1,30 @@
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+:: Parameter to modify (the directory where Intersystems IRIS is installed)
+set IRIS_DIR=C:\Intersystems\IRIS
+
+:: Pre-configured variables
+set BUILD_DIR=install\App
+set NAMESPACE=USER
+
+set USERNAME=_SYSTEM
+set PASSWORD=SYS
+
+set XML_EXPORT_DIR=docs
+set INSTALL_PACKAGE_NAME=App
+
+set NAMESPACE_TO_CREATE=DEMO
+set SOURCE_DIR=RestToDll\src
+
+:: Build and import application to Caché
+echo Importing project...
+(
+echo %USERNAME%
+echo %PASSWORD%
+echo zn "%NAMESPACE%" set st = $system.Status.GetErrorText($system.OBJ.ImportDir("%~dp0%BUILD_DIR%",,"ck",,1^^^)^^^) w "IMPORT STATUS: "_$case(st="",1:"OK",:st^^^), ! 
+echo set pVars("NAMESPACE"^^^) = "%NAMESPACE_TO_CREATE%"
+echo set pVars("SourceDir"^^^) = "%~dp0%SOURCE_DIR%"
+echo zw ##class(App.Installer^^^).setup(.pVars^^^)
+echo halt
+) | "%IRIS_DIR%\bin\irisdb.exe" -s "%IRIS_DIR%\mgr" -U %NAMESPACE%
+

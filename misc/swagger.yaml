@@ -1,0 +1,139 @@
+swagger: "2.0"
+info:
+  description: "RestToDll REST API."
+  version: "1.0.0"
+  title: "RestToDll"
+host: "localhost:52773"
+basePath: "/api/allergies"
+tags:
+- name: "aliments"
+  description: "Get allergies from aliment"
+- name: "allergies"
+  description: "Get aliments from allergies"
+schemes:
+- "http"
+paths:
+  /allergies:
+    post:
+      tags:
+      - "allergies"
+      summary: "Add a new allergic reaction"
+      description: ""
+      operationId: "addAllergie"
+      consumes:
+      - "application/json"
+      - "application/xml"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "The name of the allergic reaction to be added"
+        required: true
+        schema:
+          $ref: "#/definitions/AddAllergie"
+      responses:
+        405:
+          description: "Invalid input"
+        
+  /allergies/{name}:
+    get:
+      tags:
+      - "allergies"
+      summary: "Returns a list of aliment"
+      description: ""
+      operationId: "getAlimentsByAllergies"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "name"
+        in: "path"
+        description: "name of the allergie"
+        required: true
+        type: "string"
+        format: "utf8"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Response"
+        400:
+          description: "Invalid input"
+        404:
+          description: "Allergie reaction not found"
+        
+  /aliments:
+    post:
+      tags:
+      - "aliments"
+      summary: "Add new food"
+      description: ""
+      operationId: "addAliment"
+      consumes:
+      - "application/json"
+      - "application/xml"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "The name of the food to be added"
+        required: true
+        schema:
+          $ref: "#/definitions/AddAliment"
+      responses:
+        405:
+          description: "Invalid input"
+  
+  /aliments/{name}:
+    get:
+      tags:
+      - "aliments"
+      summary: "Returns a list of allergic reactions"
+      description: ""
+      operationId: "getAllergiesByAliment"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "name"
+        in: "path"
+        description: "name of the aliment"
+        required: true
+        type: "string"
+        format: "utf8"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Response"
+        400:
+          description: "Invalid input"
+        404:
+          description: "Aliment reaction not found"
+  
+definitions:
+  AddAliment:
+    type: "object"
+    properties:
+      aliments:
+        type: "array"
+        items:
+          type: "string"
+  AddAllergie:
+    type: "object"
+    properties:
+      allergies:
+        type: "array"
+        items:
+          type: "string"
+  Response:
+    type: "object"
+    properties:
+      response:
+        type: "array"
+        items:
+          type: "string"
