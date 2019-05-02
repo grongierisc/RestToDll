@@ -10,7 +10,7 @@ Disable the configuration security in :
 System Administration -> Security -> System Security -> System-wide Security Parameters  
 Uncheck the _Enable configuration security_ checkbox  
 
-Open the install.bat file in an text editor  
+Open the install.bat file in a text editor  
 Change the **IRIS_DIR** value to the path of the directory where Intersystems IRIS is installed.  
 Change the **USERNAME** and **PASSWORD** values to the IRIS credentials.  
 
@@ -21,3 +21,6 @@ When the installation is complete, start the production if it is not already run
 ## Usage
 The api is on :  
 localhost:<IRIS Web Server Port>/api/allergies
+
+## Uninstall
+In progress ...
