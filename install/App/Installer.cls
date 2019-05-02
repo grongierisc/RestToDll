@@ -24,6 +24,7 @@ ClassMethod CSPAppConfigureAsREST(pCSPAppName) As %Status
     Set tSC = $System.Status.OK()
     Try
     {
+        zn "%SYS"
         Set oCSPApp = ##class(Security.Applications).%OpenId(pCSPAppName, , .tSC)
         Set oCSPApp.DispatchClass = "RestToDll.WS.AllergiesREST"
         Set oCSPApp.UseCookies = 1
@@ -64,7 +65,6 @@ XData Install [ XMLNamespace = INSTALLER ]
         </Error>
     </If>
 
-
     <If Condition='(##class(Config.Namespaces).Exists("${NAMESPACE}")=0)'>
         <Log Text="Configuring namespace ${NAMESPACE} ..." Level="0"/>
         <Namespace Name="${NAMESPACE}" Create="yes" Code="${NAMESPACE}" Ensemble="1" Data="${NAMESPACE}">
@@ -72,38 +72,39 @@ XData Install [ XMLNamespace = INSTALLER ]
                 <Database Name="${NAMESPACE}" Dir="${MGRDIR}${NAMESPACE}" Create="yes"/>
             </Configuration>
         </Namespace>
+    </If>
 
+    <Namespace Name="${NAMESPACE}" Create="no">
         <Log Text="Configuring CSP applications for ${NAMESPACE} ..." Level="0"/>
-        <!--<CSPApplication Url="/api/allergies" Directory="C:\Instersystems\IRIS\CSP\allergies" AuthenticationMethods="64" IsNamespaceDefault="false" Grant="AppRole" Recurse="true" CookiePath="${CSPDIR}/allergies"/> -->
-        <Invoke Class="App.Installer" Method="CreateRESTApp" CheckStatus="true">
-        </Invoke>
-
+        <CSPApplication Url="/api/allergies" Directory="${CSPDIR}allergies" AuthenticationMethods="64" IsNamespaceDefault="false" Grant="AppRole" Recurse="true" CookiePath="${CSPDIR}/allergies" DispatchClass="RestToDll.WS.AllergiesREST"/> 
+        <!--<Invoke Class="App.Installer" Method="CreateRESTApp" CheckStatus="true">
+        </Invoke>-->
 
         <IfDef Var="SourceDir">
             <Log Text="SourceDir defined, offline install from ${SourceDir} ..." Level="0"/>
-            <Import File="${SourceDir}" Recurse="true"/>
+            <Import File="${SourceDir}" Flags="cukb" Recurse="true"/>
         </IfDef>
+    </Namespace>
 
-
+    <Namespace Name="USER" Create="no">
         <Log Text="Applying additional configurations to the new REST CSP applications ..." Level="0"/>
         <Invoke Class="App.Installer" Method="CSPAppConfigureAsREST" CheckStatus="true">
             <Arg name="pCSPAppName" Value="/api/allergies"/>
         </Invoke>
+    </Namespace>
 
-    
+    <Namespace Name="USER" Create="no">
         <Log Text="Configuring production to auto-start ..." Level="0"/>
         <Invoke Class="App.Installer" Method="ConfigureAutoStart" CheckStatus="true">
             <Arg name="pNamespace" Value="${NAMESPACE}"/>
         </Invoke>
-        
-    </If>
+    </Namespace>
 
 </Manifest>
 }
 
 ClassMethod setup(ByRef pVars, pLogLevel As %Integer = 0, pInstaller As %Installer.Installer) As %Status [ CodeMode = objectgenerator, Internal ]
 {
-	
      Quit ##class(%Installer.Manifest).%Generate(%compiledclass, %code, "Install")
 }
 
