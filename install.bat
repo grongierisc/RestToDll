@@ -2,7 +2,6 @@
 @echo off
 
 :: Parameter to modify (the directory where Intersystems IRIS is installed)
-::set IRIS_DIR=C:\Intersystems\IRIS
 set IRIS_DIR=C:\Intersystems\IRIS
 
 set USERNAME=superuser
@@ -18,11 +17,11 @@ set INSTALL_PACKAGE_NAME=App
 set NAMESPACE_TO_CREATE=DEMO
 set SOURCE_DIR=RestToDll\src
 
-:: Build and import application to Caché
+:: Build and import application to IRIS
 echo Importing project...
 (
-echo | set /p=%USERNAME%
-echo | set /p=%PASSWORD%
+echo %USERNAME%
+echo %PASSWORD%
 echo zn "%NAMESPACE%" set st = $system.Status.GetErrorText($system.OBJ.ImportDir("%~dp0%BUILD_DIR%",,"ck",,1^^^)^^^) w "IMPORT STATUS: "_$case(st="",1:"OK",:st^^^), ! 
 echo set pVars("NAMESPACE"^^^) = "%NAMESPACE_TO_CREATE%"
 echo set pVars("SourceDir"^^^) = "%~dp0%SOURCE_DIR%"
