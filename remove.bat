@@ -11,8 +11,8 @@ set PASSWORD=SYS
 set NAMESPACE_TO_REMOVE=DEMO
 set REST_API=/api/allergies
 
-:: Build and import application to IRIS
-echo Importing project...
+:: Removing application from IRIS
+echo Removing project...
 (
 echo %USERNAME%
 echo %PASSWORD%
