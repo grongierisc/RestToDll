@@ -1,11 +1,14 @@
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 @echo off
 
-:: Parameter to modify (the directory where Intersystems IRIS is installed)
-set IRIS_DIR=C:\Intersystems\IRIS
+:: Parameter to modify
+set IRIS_DIR="C:\InterSystems\IRIS"
+set /p IRIS_DIR= "Please enter the path of the Intersystems IRIS directory [C:\InterSystems\IRIS] : "
 
-set USERNAME=superuser
-set PASSWORD=SYS
+set USERNAME="_SYSTEM"
+set /p USERNAME= "Please enter your IRIS username [_SYSTEM] : "
+
+set /p PASSWORD= "Please enter your password : "
 
 :: Pre-configured variables
 set BUILD_DIR=install\App
@@ -22,6 +25,9 @@ copy Allergie\Allergie.dll %IRIS_DIR%\mgr\
 
 echo Importing project...
 (
+echo %USERNAME%
+echo %PASSWORD%
+
 echo zn "%NAMESPACE%" set st = $system.Status.GetErrorText($system.OBJ.ImportDir("%~dp0%BUILD_DIR%",,"ck",,1^^^)^^^) w "IMPORT STATUS: "_$case(st="",1:"OK",:st^^^), ! 
 echo set pVars("NAMESPACE"^^^) = "%NAMESPACE_TO_CREATE%"
 echo set pVars("SourceDir"^^^) = "%~dp0%SOURCE_DIR%"
@@ -29,3 +35,6 @@ echo do ##class(App.Installer^^^).setup(.pVars^^^)
 echo halt
 ) | "%IRIS_DIR%\bin\irisdb.exe" -s "%IRIS_DIR%\mgr" -U %NAMESPACE%
 
+echo:
+echo ... Done
+timeout 2 >nul

@@ -1,11 +1,14 @@
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 @echo off
 
-:: Parameter to modify (the directory where Intersystems IRIS is installed)
-set IRIS_DIR=C:\Intersystems\IRIS
+:: Parameter to modify
+set IRIS_DIR="C:\InterSystems\IRIS"
+set /p IRIS_DIR= "Please enter the path of the Intersystems IRIS directory [C:\Intersystems\IRIS] : "
 
-set USERNAME=superuser
-set PASSWORD=SYS
+set USERNAME="_SYSTEM"
+set /p USERNAME= "Please enter your IRIS username [_SYSTEM] : "
+
+set /p PASSWORD= "Please enter your password : "
 
 :: Pre-configured variables
 set NAMESPACE_TO_REMOVE=DEMO
@@ -35,3 +38,6 @@ echo do:CspExist ##class(Security.Applications^^^).Delete("%REST_API%"^^^)
 echo halt
 ) | "%IRIS_DIR%\bin\irisdb.exe" -s "%IRIS_DIR%\mgr" -U "%%SYS"
 
+echo:
+echo ... Done
+timeout 2 >nul
