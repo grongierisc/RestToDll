@@ -93,11 +93,24 @@ XData Install [ XMLNamespace = INSTALLER ]
         </Invoke>
     </Namespace>
 
-    <Namespace Name="USER" Create="no">
+    <!--<Namespace Name="USER" Create="no">
         <Log Text="Configuring production to auto-start ..." Level="0"/>
         <Invoke Class="App.Installer" Method="ConfigureAutoStart" CheckStatus="true">
             <Arg name="pNamespace" Value="${NAMESPACE}"/>
         </Invoke>
+    </Namespace>-->
+
+    <Namespace Name="${NAMESPACE}" Create="no">
+        <Log Text="Configuring production dll file path ..." Level="0"/>
+        <Production Name="RestToDll.Production">
+            <Setting Item="DLL_ALLERGIE"
+                    Target="Host"
+                    Setting="DllPath"
+                    Value="${MGRDIR}Allergie.dll"/>
+        </Production>
+
+        <Log Text="Configuring production to auto-start ..." Level="0"/>
+        <Production Name="RestToDll.Production" AutoStart="1"/>
     </Namespace>
 
 </Manifest>
