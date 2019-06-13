@@ -1,5 +1,5 @@
 # RestToDll
-Proof of Concept of an .Net Gateway on IRIS
+Example of an .Net Gateway on IRIS
 
 ## Prerequisite
 - IRIS 2019.1
