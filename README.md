@@ -1,5 +1,5 @@
 # RestToDll
-How to use an DLL in .Net throw an objectscript gateway on IRIS 
+How to use an DLL in .Net through an objectscript gateway on IRIS 
 
 ## Prerequisite
 - IRIS 2019.1
