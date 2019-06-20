@@ -13,12 +13,18 @@ set /p PASSWORD= "Please enter your password : "
 :: Pre-configured variables
 set NAMESPACE_TO_REMOVE=DEMO
 set REST_API=/api/allergies
+set PRODUCTION_NAME=RestToDll.Production
 
 :: Removing application from IRIS
 echo Removing project...
 (
 echo %USERNAME%
 echo %PASSWORD%
+
+echo zn "%NAMESPACE_TO_REMOVE%"
+echo do ##class(Ens.Director^^^).StopProduction(^^^)
+
+echo zn "%%SYS"
 
 echo set NsExist = ##class(Config.Namespaces^^^).Exists("%NAMESPACE_TO_REMOVE%"^^^)
 echo do:NsExist ##class(Config.Namespaces^^^).Delete("%NAMESPACE_TO_REMOVE%"^^^)
@@ -37,6 +43,10 @@ echo do:CspExist ##class(Security.Applications^^^).Delete("%REST_API%"^^^)
 
 echo halt
 ) | "%IRIS_DIR%\bin\irisdb.exe" -s "%IRIS_DIR%\mgr" -U "%%SYS"
+
+REM echo Removing files ...
+REM del /F %IRIS_DIR%\mgr\Allergie.dll
+REM del /F %IRIS_DIR%\mgr\imcBO.jar
 
 echo:
 echo ... Done

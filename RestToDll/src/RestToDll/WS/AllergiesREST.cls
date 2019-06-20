@@ -9,48 +9,28 @@ Parameter CHARSET = "utf-8";
 /// ended after each request in accordance with the spirit of REST. However this CAN be
 /// overridden by the user. To use a session, it's necessary to manage the CSPSESSION cookie.
 /// Browsers do this automatically but command line tools such as CURL require the setting of
-/// options.<p>
-/// Note that if you choose to use a session then this will use a CSP license until the session
-/// is ended or expires and the grace period has been satisfied. If you use the default of no
-/// session then this will be the same behavior as SOAP requests of holding a license for ten
-/// seconds.
+/// options.
 Parameter UseSession As %Integer = 1;
 
 Parameter HandleCorsRequest As %Integer = 1;
 
 /// 
 /// The UrlMap determines how a Url should map to a HTTP Method and a Target ClassMethod
-/// indicated by the 'Call' attribute. The call attribute is either the name of a method
-/// or the name of a class and method seperated by a ':'. Parameters within the URL preceded
-/// by a ':' will be extracted from the supplied URL and passed as arguments to the named method.
-/// 
+/// indicated by the 'Call' attribute. 
 /// In this Route Entry GET requests to /class/namespace/classname will call the GetClass method
 /// 
 /// <Route Url="/class/:namespace/:classname" Method="GET" Call="GetClass"/>
-/// 
-/// To influence CORS processing you can set the "Cors" attribute to "true", default is "false".
-/// The "Cors" attribute is only considered if the PARAMETER 'HandleCorsRequest' is left unspecified.
-/// 
-/// <Route Url="/class/:namespace/:classname" Method="GET" Call="GetClass" Cors="true"/>
-/// 
-/// Use a Map Entry to forward ALL requests made to a particular URL prefix. For example. If your 
-/// web application has a base url route of /api/v1 and you want to map all requests to 
-/// /api/v1/docserver (including all sub-urls) enter a Map entry like this:
-/// 
-/// <Map Prefix="/docserver" Forward="%Api.v1.DocServer"/>
-/// 
-/// This will result in calls such as /api/v1/docserver/class/Samples/Sample.Person being redirected
-/// to the class %API.v1.DocServer ( another subclass of %CSP.REST )for futher processing. 
 XData UrlMap [ XMLNamespace = "http://www.intersystems.com/urlmap" ]
 {
 <Routes>
-<Route Url="/reactions/:name" Method="GET" Cors="true" Call="GetFromAllergie"/>
-<Route Url="/reactions" Method="POST" Cors="true" Call="AddAllergies"/>
-<Route Url="/aliments/:name" Method="GET" Cors="true" Call="GetFromAliment"/>
-<Route Url="/aliments" Method="POST" Cors="true" Call="AddAliments"/>
+<Route Url="/patients/:id" Method="GET" Cors="true" Call="GetInformations"/>
 </Routes>
 }
 
+/* <Route Url="/reactions/:name" Method="GET" Cors="true" Call="GetFromAllergie"/>
+<Route Url="/reactions" Method="POST" Cors="true" Call="AddAllergies"/>
+<Route Url="/aliments/:name" Method="GET" Cors="true" Call="GetFromAliment"/>
+<Route Url="/aliments" Method="POST" Cors="true" Call="AddAliments"/> */
 ClassMethod GetFromAllergie(pName As %String) As %Status
 {
 	set status = $$$OK
@@ -83,7 +63,27 @@ ClassMethod GetFromAliment(pName As %String) As %Status
 		set tRequest.Type = "aliment"
 		set tRequest.Name = pName
 		
-		$$$ThrowOnError(tService.ProcessInput(tRequest,.output))	
+		$$$ThrowOnError(tService.ProcessInput(tRequest,.output))
+	
+		$$$ThrowOnError(##CLASS(%ZEN.Auxiliary.jsonProvider).%ObjectToJSON(output,,,"iuweloa"))
+
+	} catch(ex) {
+		set status = ex.AsStatus()
+	}
+	return status
+}
+
+ClassMethod GetInformations(pId As %String) As %Status
+{
+	set status = $$$OK
+	try {
+
+		$$$ThrowOnError(##class(Ens.Director).CreateBusinessService(..#BsName,.tService))
+		
+		set tRequest = ##class(RestToDll.Msg.RestGetRequest).%New()
+		set tRequest.Id = pId
+		
+		$$$ThrowOnError(tService.ProcessInput(tRequest,.output))
 	
 		$$$ThrowOnError(##CLASS(%ZEN.Auxiliary.jsonProvider).%ObjectToJSON(output,,,"iuweloa"))
 

@@ -13,6 +13,11 @@ XData ProductionDefinition
   </Item>
   <Item Name="REST_TO_DLL" Category="" ClassName="RestToDll.BP.RestToDll" PoolSize="1" Enabled="true" Foreground="false" Comment="" LogTraceEvents="false" Schedule="">
   </Item>
+  <Item Name="JG_INITIATOR" Category="" ClassName="EnsLib.JavaGateway.Initiator" PoolSize="1" Enabled="true" Foreground="false" Comment="" LogTraceEvents="false" Schedule="">
+    <!--<Setting Target="Host" Name="JavaHome">C:\Progra~1\Java\jdk1.8.0_211</Setting>-->
+  </Item>
+  <!--<Item Name="JBH_IMC" Category="" ClassName="JBH.RestToDll.BO.IMCOperation" PoolSize="1" Enabled="true" Foreground="false" Comment="" LogTraceEvents="false" Schedule="">
+  </Item>-->
 </Production>
 }
 

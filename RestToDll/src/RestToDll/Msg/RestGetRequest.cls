@@ -1,11 +1,7 @@
 Class RestToDll.Msg.RestGetRequest Extends Ens.Request
 {
 
-// Type is either aliment or allergie
-
-Property Type As %String;
-
-Property Name As %String;
+Property Id As %Integer;
 
 Storage Default
 {
@@ -16,6 +12,9 @@ Storage Default
 </Value>
 <Value name="2">
 <Value>Type</Value>
+</Value>
+<Value name="3">
+<Value>Id</Value>
 </Value>
 </Data>
 <DefaultData>AlimentRequestDefaultData</DefaultData>

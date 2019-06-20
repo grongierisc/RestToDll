@@ -22,7 +22,7 @@ Method OnInit() As %Status
 
 Method CreateGateWay() As %Status
 {
-
+    //jhk
     If '##class(%Net.Remote.ObjectGateway).GatewayExists("NetGate")
     {
 
@@ -85,7 +85,7 @@ Method SetProxy() As %Status
     Quit $$$OK
 }
 
-Method OnGetReaction(pRequest As RestToDll.Msg.ReactionRequest, Output pResponse As RestToDll.Msg.ResultResponse) As %Status
+Method OnGetReaction(pRequest As RestToDll.Msg.ReactionRequest, Output pResponse As RestToDll.Msg.AlimentResponse) As %Status
 {
         set tStatus = $$$OK
         
@@ -103,7 +103,7 @@ Method OnGetReaction(pRequest As RestToDll.Msg.ReactionRequest, Output pResponse
         Quit tStatus
 }
 
-Method OnAddReaction(pRequest As RestToDll.Msg.AddReactionRequest, Output pResponse As RestToDll.Msg.ResultResponse) As %Status
+Method OnAddReaction(pRequest As RestToDll.Msg.AddReactionRequest, Output pResponse As RestToDll.Msg.AlimentResponse) As %Status
 {
             set tStatus = $$$OK
             
@@ -121,7 +121,7 @@ Method OnAddReaction(pRequest As RestToDll.Msg.AddReactionRequest, Output pRespo
             Quit tStatus
 }
 
-Method OnAddAliment(pRequest As RestToDll.Msg.AddAlimentRequest, Output pResponse As RestToDll.Msg.ResultResponse) As %Status
+Method OnAddAliment(pRequest As RestToDll.Msg.AddAlimentRequest, Output pResponse As RestToDll.Msg.AlimentResponse) As %Status
 {
             set tStatus = $$$OK
             
@@ -139,7 +139,7 @@ Method OnAddAliment(pRequest As RestToDll.Msg.AddAlimentRequest, Output pRespons
             Quit tStatus
 }
 
-Method OnGetAliment(pRequest As RestToDll.Msg.AlimentRequest, Output pResponse As RestToDll.Msg.ResultResponse) As %Status
+Method OnGetAliment(pRequest As RestToDll.Msg.AlimentRequest, Output pResponse As RestToDll.Msg.AlimentResponse) As %Status
 {
             set tStatus = $$$OK
         
@@ -157,17 +157,18 @@ Method OnGetAliment(pRequest As RestToDll.Msg.AlimentRequest, Output pResponse A
             Quit tStatus
 }
 
-Method GetAllergie(pName As %String, tType As %String, Output pResponse As RestToDll.Msg.ResultResponse) As %Status
+Method GetAllergie(pName As %String, tType As %String, Output pResponse As RestToDll.Msg.AlimentResponse) As %Status
 {
                 set tStatus = $$$OK
                 
-                Set pResponse = ##class(RestToDll.Msg.ResultResponse).%New()
+                Set pResponse = ##class(RestToDll.Msg.AlimentResponse).%New()
 
         
                 Set pResponse.Results = ##class(%ListOfDataTypes).%New()
             
                 try{
 
+            
                     if tType = "Aliment"
                     {
                         set tReturn = ..proxyGateway.getReactions(pName)
@@ -191,7 +192,7 @@ Method GetAllergie(pName As %String, tType As %String, Output pResponse As RestT
                 Quit tStatus
 }
 
-Method AddAllergie(pName As %String, tType As %String, Output pResponse As RestToDll.Msg.ResultResponse) As %Status
+Method AddAllergie(pName As %String, tType As %String, Output pResponse As RestToDll.Msg.AlimentResponse) As %Status
 {
         set tStatus = $$$OK
         

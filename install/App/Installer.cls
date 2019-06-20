@@ -3,6 +3,45 @@ Include %occInclude
 Class App.Installer
 {
 
+ClassMethod LoadPatientData(pNamespace As %String) As %Status
+{
+    Set tSC = $$$OK
+    Try
+    {
+        ZN pNamespace
+        Set patient1 = ..CreatePatient(1, "John", "Doe", 170, 69, "urticaire")
+        Set patient2 = ..CreatePatient(2, "Justin", "Kase", 180, 75, "rhinite")
+        Set patient3 = ..CreatePatient(3, "Holly", "Wood", 168, 73, "choc anaphylactique")
+        Set patient4 = ..CreatePatient(4, "Stan", "Still", 176, 87, "urticaire")
+
+        Quit:$System.Status.IsError(patient1)
+        Quit:$System.Status.IsError(patient2)
+        Quit:$System.Status.IsError(patient3)
+        Quit:$System.Status.IsError(patient4)
+    }
+    Catch (oException)
+    {
+        Set tSC = oException.AsStatus()
+    }
+    
+    ZN "%SYS"
+    Quit tSC
+}
+
+ClassMethod CreatePatient(pId As %Integer, pFirstName As %String, pLastName As %String, pHeight As %Integer, pWeight As %Integer, pAllergy As %String) As %Status
+{
+    Set tPatient = ##class(User.Patient).%New()
+    Set tPatient.FIRSTNAME = pFirstName
+    Set tPatient.LASTNAME = pLastName
+    Set tPatient.HEIGHT = pHeight
+    Set tPatient.WEIGHT = pWeight
+    Set tPatient.ALLERGICREACTION = pAllergy
+
+    Set tSC = tPatient.%Save()
+
+	Quit tSC
+}
+
 ClassMethod CreateRESTApp() As %Status
 {
     zn "USER"
@@ -53,6 +92,24 @@ ClassMethod ConfigureAutoStart(pNamespace As %String) As %Status
     Quit tSC
 }
 
+ClassMethod ConfigureCredentials(pNamespace As %String) As %Status
+{
+    Set tSC = $$$OK
+    Try 
+    {
+        Set tNS = $NAMESPACE
+        ZN pNamespace
+        Set tSC = ##class("Ens.Config.Credentials").SetCredential("Doctor", "_system", "SYS", 1)
+        Quit:$System.Status.IsError(tSC)
+    } 
+    Catch (oException) 
+    {
+        Set tSC = oException.AsStatus()
+    }
+    ZN tNS
+    Quit tSC
+}
+
 XData Install [ XMLNamespace = INSTALLER ]
 {
 <Manifest>
@@ -74,6 +131,13 @@ XData Install [ XMLNamespace = INSTALLER ]
         </Namespace>
     </If>
 
+    <Namespace Name="USER" Create="no">
+        <Log Text="Configuring credentials for production ..." Level="0"/>
+        <Invoke Class="App.Installer" Method="ConfigureCredentials" CheckStatus="true">
+            <Arg name="pNamespace" Value="${NAMESPACE}"/>
+        </Invoke>
+    </Namespace>
+
     <Namespace Name="${NAMESPACE}" Create="no">
         <Log Text="Configuring CSP applications for ${NAMESPACE} ..." Level="0"/>
         <CSPApplication Url="/api/allergies" Directory="${CSPDIR}allergies" AuthenticationMethods="64" IsNamespaceDefault="false" Grant="AppRole" Recurse="true" CookiePath="${CSPDIR}/allergies" DispatchClass="RestToDll.WS.AllergiesREST"/> 
@@ -87,18 +151,18 @@ XData Install [ XMLNamespace = INSTALLER ]
     </Namespace>
 
     <Namespace Name="USER" Create="no">
+        <Log Text="Adding Patients Data ..." Level="0"/>
+        <Invoke Class="App.Installer" Method="LoadPatientData" CheckStatus="true">
+            <Arg name="pNamespace" Value="${NAMESPACE}"/>
+        </Invoke>
+    </Namespace>
+
+    <Namespace Name="USER" Create="no">
         <Log Text="Applying additional configurations to the new REST CSP applications ..." Level="0"/>
         <Invoke Class="App.Installer" Method="CSPAppConfigureAsREST" CheckStatus="true">
             <Arg name="pCSPAppName" Value="/api/allergies"/>
         </Invoke>
     </Namespace>
-
-    <!--<Namespace Name="USER" Create="no">
-        <Log Text="Configuring production to auto-start ..." Level="0"/>
-        <Invoke Class="App.Installer" Method="ConfigureAutoStart" CheckStatus="true">
-            <Arg name="pNamespace" Value="${NAMESPACE}"/>
-        </Invoke>
-    </Namespace>-->
 
     <Namespace Name="${NAMESPACE}" Create="no">
         <Log Text="Configuring production dll file path ..." Level="0"/>
@@ -107,6 +171,10 @@ XData Install [ XMLNamespace = INSTALLER ]
                     Target="Host"
                     Setting="DllPath"
                     Value="${MGRDIR}Allergie.dll"/>
+            <Setting Item="JG_INITIATOR"
+                    Target="Host"
+                    Setting="JavaHome"
+                    Value="${JAVAHOME}"/>
         </Production>
 
         <Log Text="Configuring production to auto-start ..." Level="0"/>
